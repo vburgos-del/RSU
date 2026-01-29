@@ -67,3 +67,7 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Archivos de seguridad (NO SUBIR)
+credencial.json
+datos_fen.json
