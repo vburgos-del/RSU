@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a Zero Company</title>
+    <style>
+        /* Reset de estilos para clientes de correo */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #F9FAFA; } /* Fondo general */
+        
+        /* Estilos responsivos */
+        @media screen and (max-width: 600px) {
+            .email-container { width: 100% !important; }
+            .fluid { width: 100% !important; height: auto !important; }
+            .stack-column { display: block !important; width: 100% !important; direction: ltr !important; }
+            .mobile-center { text-align: center !important; }
+            .mobile-padding { padding-left: 20px !important; padding-right: 20px !important; }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #F9FAFA;">
+
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td style="padding: 20px 0;" align="center">
+                
+                <table role="presentation" class="email-container" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    
+                    <tr>
+                        <td height="6" style="background-color: #23C2A6; line-height: 6px; font-size: 6px;">&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 30px 40px 20px 40px; text-align: center; border-bottom: 1px solid #D7E2E0;">
+                            <h2 style="margin: 0; color: #011D38; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">ZERO COMPANY</h2>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 40px 40px 20px 40px;" class="mobile-padding">
+                            
+                            <p style="margin: 0 0 15px 0; font-size: 18px; color: #4A5755;">Hola <span style="color: #E63946; font-weight: bold;">[NOMBRE]</span>,</p>
+
+                            <p style="margin: 0 0 25px 0; font-size: 16px; line-height: 1.6; color: #4A5755;"> 
+                                Gracias por conectar en ETM Day.
+		<br><br>En <strong>Zero Company</strong> estamos comprometidos con empoderar a tu empresa hacia la acción climática. 
+		<br><br>Te invito que podamos tener una reunión de profundización y avancemos para automatiar la medición de tu Huella y avancemos en su reducción.
+                            </p>                            <br>
+
+                            <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6; color: #4A5755;">
+                                Mientras tanto, te invitamos a conocer nuestro sitio web oficial:
+                            </p>
+
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding: 15px 0 25px 0;">
+                                        <a href="[ENLACE_WEB_O_LINKEDIN]" target="_blank" style="background-color: #23C2A6; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; padding: 14px 30px; border-radius: 5px; display: inline-block; mso-padding-alt:0;">
+                                            <span style="mso-text-raise: 15pt;">Visitar sitio web oficial</span>
+                                            </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <hr style="border: none; border-top: 1px solid #D7E2E0; margin: 20px 0;">
+
+                            <p style="margin: 0 0 10px 0; font-weight: 700; font-size: 16px; color: #011D38;">¿Por qué Zero Company?</p>
+                            <p style="margin: 0 0 25px 0; font-size: 15px; line-height: 1.6; color: #4A5755;">
+                                Porque transformamos lo complejo en accionable: <strong>medimos en minutos</strong>, conectamos corporativos con sus proveedores para impulsar la descarbonización y ofrecemos reportes claros, listos para auditoría.
+                            </p>
+
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td valign="top" class="stack-column" style="width: 50%; padding-bottom: 20px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding-right: 10px;">
+                                                    <p style="margin: 0; font-weight: 700; font-size: 14px; color: #23C2A6;">CONTACTO</p>
+                                                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #4A5755;">
+                                                        [CONTACT_EMAIL]<br>
+                                                        [CONTACT_PHONE]
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td valign="top" class="stack-column" style="width: 50%; padding-bottom: 20px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding-left: 10px;" class="mobile-padding">
+                                                    <p style="margin: 0; font-weight: 700; font-size: 14px; color: #23C2A6;">ENLACE ÚTIL</p>
+                                                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #4A5755;">
+                                                        <a href="[PDF_LINK_O_ADJUNTO]" target="_blank" style="color: #23C2A6; text-decoration: underline;">Descargar PDF informativo</a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin: 20px 0 25px 0; font-size: 15px; line-height: 1.6; color: #4A5755;">
+                                Agradecemos tu interés y confianza. Estamos listos para facilitar tu transición hacia una gestión climática real y medible.
+                            </p>
+
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="border-left: 4px solid #23C2A6; padding-left: 15px;">
+                                        <p style="margin: 0; font-size: 16px; font-weight: bold; color: #4A5755;">Cristobal Politis</p>
+                                        <p style="margin: 4px 0 0 0; font-size: 14px; color: #4A5755;">Head of Growth · Zero Company</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="background-color: #011D38; padding: 30px 40px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td class="stack-column" style="width: 50%; padding-bottom: 10px; vertical-align: top; color: #ffffff;">
+                                        <div style="font-weight: 700; font-size: 16px; margin-bottom: 5px;">Zero Company</div>
+                                        <div style="font-size: 12px; color: #D7E2E0;">Medición automatizada de huella de carbono<br>ODS 13</div>
+                                    </td>
+                                    <td class="stack-column mobile-center" style="width: 50%; vertical-align: top; text-align: right; color: #ffffff;">
+                                        <a href="[ENLACE_WEB_O_LINKEDIN]" style="color: #23C2A6; font-weight: 700; text-decoration: none; margin-right: 15px; font-size: 13px;">Visitar Web</a>
+                                        <a href="[PDF_LINK_O_ADJUNTO]" style="color: #23C2A6; font-weight: 700; text-decoration: none; font-size: 13px;">Ver PDF</a>
+                                        <div style="margin-top: 10px; font-size: 11px; color: #AAC3C0;">
+                                            Si no deseas recibir comunicaciones, responde <em>BAJA</em>.
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+                
+                <p style="font-size: 12px; color: #999999; margin-top: 20px;">
+                    &copy; 2024 Zero Company. Todos los derechos reservados.
+                </p>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

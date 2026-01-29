@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio Emprendedores FEN</title>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        :root {
+            --fen-blue: #003366;
+            --fen-purple: #663399;
+            --bg-color: #f4f7f9;
+            --text-dark: #333;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); margin: 0; color: var(--text-dark); padding-top: 80px; /* Espacio para el navbar fijo */ }
+
+        /* --- NAVBAR (NUEVO) --- */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+            background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; box-sizing: border-box; z-index: 1000;
+        }
+       
+        .logo-container { font-size: 1.5rem; font-weight: bold; color: var(--fen-blue); display: flex; align-items: center; gap: 10px; }
+        .logo-bar { width: 5px; height: 35px; background: var(--fen-blue); display: inline-block; margin-right: 2px;}
+        .logo-bar.tall { height: 50px; }
+       
+        .nav-menu { display: flex; gap: 25px; list-style: none; align-items: center; margin: 0; padding: 0; }
+        .nav-item { cursor: pointer; font-weight: 500; color: #444; transition: 0.3s; font-size: 0.95rem; }
+        .nav-item:hover { color: var(--fen-blue); }
+        .nav-item.active { color: var(--fen-blue); font-weight: bold; border-bottom: 2px solid var(--fen-blue); }
+
+        /* Botón Login en el Navbar */
+        .btn-nav-login {
+            background: var(--fen-blue); color: white; padding: 8px 20px; border-radius: 5px;
+            text-decoration: none; font-weight: bold; transition: 0.3s; font-size: 0.9rem;
+        }
+        .btn-nav-login:hover { background: var(--fen-purple); }
+
+        /* --- SECCIONES DE CONTENIDO (PÁGINAS) --- */
+        .seccion-pagina { display: none; animation: fadeEffect 0.5s; padding-bottom: 50px;}
+        .seccion-activa { display: block; }
+
+        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+
+        /* --- ESTILOS ESPECÍFICOS DE LAS PÁGINAS DE TEXTO (RSU / NOSOTROS) --- */
+        .text-page-container { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .text-page-container h2 { color: var(--fen-blue); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .text-page-container p { line-height: 1.8; color: #555; margin-bottom: 20px; }
+
+        /* --- ESTILOS ORIGINALES (HERO, BUSCADOR, CARDS) --- */
+        header { background: linear-gradient(135deg, var(--fen-blue), var(--fen-purple)); color: white; padding: 60px 20px 40px; text-align: center; }
+        header h1 { margin: 0; font-size: 2.5rem; }
+       
+        .tabs-container { display: flex; justify-content: center; gap: 15px; margin-top: 25px; }
+        .tab-btn {
+            padding: 10px 25px; border: 1px solid rgba(255,255,255,0.3); border-radius: 30px;
+            font-size: 1rem; cursor: pointer; font-weight: bold;
+            background: rgba(0,0,0,0.2); color: rgba(255,255,255,0.8); transition: all 0.3s ease;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.1); }
+        .tab-btn.active { background: white; color: var(--fen-purple); box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-color: white; transform: scale(1.05); }
+
+        .search-container { max-width: 800px; margin: -30px auto 10px; padding: 0 20px; position: relative; z-index: 10; }
+        input#buscador { width: 100%; padding: 20px; font-size: 18px; border: none; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); outline: none; box-sizing: border-box; }
+
+        /* --- NUEVOS ESTILOS PARA LOS FILTROS --- */
+        .filters-container {
+            max-width: 900px; margin: 0 auto 30px; padding: 0 20px;
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
+        }
+        .filter-select {
+            padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd;
+            background: white; color: #555; font-size: 0.9rem; cursor: pointer;
+            outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex: 1 1 200px;
+        }
+        .filter-select:hover { border-color: var(--fen-blue); }
+
+        .grid-resultados { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+       
+        .card {
+            background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s; border-top: 5px solid var(--fen-blue); display: flex; flex-direction: column; cursor: pointer;
+        }
+        .card.proyecto { border-top-color: var(--fen-purple); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card-body { padding: 20px; flex-grow: 1; }
+       
+        .card h3 { margin: 0 0 5px; color: var(--fen-blue); font-size: 1.2rem; }
+        .card .subtitulo { color: #666; font-size: 0.9rem; margin-bottom: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card .descripcion { font-size: 0.9rem; color: #444; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+       
+        .tags { padding: 0 20px 20px; }
+        .badge { padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; background-color: #e3f2fd; color: #003366; font-weight: bold;}
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 600px; border-radius: 15px; padding: 30px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; animation: fadeEffect 0.3s ease-out; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: #aaa; }
+        .modal-header h2 { color: var(--fen-blue); margin-top: 0; }
+        .modal-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; background: #f9f9f9; padding: 15px; border-radius: 10px; }
+        .info-item label { display: block; font-size: 0.8rem; color: #888; font-weight: bold; text-transform: uppercase; }
+        .info-item span { display: block; font-size: 1rem; color: #333; font-weight: 500; }
+        .modal-desc { line-height: 1.6; color: #444; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;}
+
+        /* Responsivo para el navbar */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .nav-menu { gap: 15px; font-size: 0.8rem; }
+            .btn-nav-login { padding: 5px 10px; font-size: 0.8rem; }
+            .logo-container span { display: none; } /* Ocultar texto FEN en móviles muy chicos */
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo-container">
+            <div style="display:flex; align-items:flex-end; gap:2px;">
+                <div class="logo-bar"></div>
+                <div class="logo-bar tall"></div>
+                <div class="logo-bar"></div>
+            </div>
+            <span>FEN <span style="color:#333;">UCHILE</span></span>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="navegar('inicio', this)">Inicio</li>
+            <li class="nav-item" onclick="navegar('nosotros', this)">Nosotros</li>
+            <li class="nav-item" onclick="navegar('rsu', this)">Qué es RSU</li>
+            <li><a href="admin.html" class="btn-nav-login">Iniciar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <div id="vista-inicio" class="seccion-pagina seccion-activa">
+        <header>
+            <h1>Directorio FEN</h1>
+            <p>Red de Emprendimiento e Innovación</p>
+           
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="cambiarModo('proyectos')" id="btn-proyectos"> 🚀 Startups & Proyectos</button>
+                <button class="tab-btn" onclick="cambiarModo('todos')" id="btn-todos"> 👥 Toda la Comunidad</button>
+            </div>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="buscador" placeholder=" 🔍 Busca por nombre, emprendimiento o industria...">
+        </div>
+
+        <div class="filters-container">
+            <select id="filtro-carrera" class="filter-select" onchange="aplicarFiltrosGlobales()">
+                <option value="">🎓 Todas las Carreras</option>
+            </select>
+            <select id="filtro-etapa" class="filter-select" onchange="aplicarFiltrosGlobales()">
+                <option value="">🚀 Tipo / Etapa</option>
+            </select>
+            <select id="filtro-situacion" class="filter-select" onchange="aplicarFiltrosGlobales()">
+                <option value="">🎓 Estudiante vs Egresado</option>
+            </select>
+        </div>
+       
+        <div id="loader" style="text-align:center; padding: 20px;"> 🔄 Cargando datos...</div>
+        <div id="contadorResultados" style="text-align:center; color:#666; margin-bottom: 10px;"></div>
+       
+        <div class="grid-resultados" id="contenedor"></div>
+
+        <div id="btn-cargar-mas-container" style="text-align: center; margin: 30px 0; display: none;">
+            <button onclick="cargarMas()" style="padding: 12px 30px; background: white; border: 2px solid var(--fen-blue); color: var(--fen-blue); border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s;"> ➕ Ver más resultados</button>
+        </div>
+    </div>
+
+    <div id="vista-nosotros" class="seccion-pagina">
+        <div class="text-page-container">
+            <h2>De qué se trata esta página</h2>
+            <p>El <strong>Directorio de Emprendedores FEN</strong> es una iniciativa creada para visibilizar y conectar el talento de nuestra facultad. Aquí encontrarás una base de datos viva con estudiantes y egresados que están creando valor a través de sus proyectos.</p>
+            <p>Nuestro objetivo es fomentar el networking, facilitar el acceso a oportunidades y crear una comunidad sólida de innovación dentro de la Universidad de Chile.</p>
+            <p>Si eres parte de la FEN y tienes una idea o un negocio en marcha, ¡este es tu lugar!</p>
+        </div>
+    </div>
+
+    <div id="vista-rsu" class="seccion-pagina">
+        <div class="text-page-container">
+            <h2>¿Qué es la RSU?</h2>
+            <p>La <strong>Responsabilidad Social Universitaria (RSU)</strong> es la capacidad que tiene la Universidad de difundir y poner en práctica un conjunto de principios y valores, a través de cuatro procesos clave: gestión, docencia, investigación y extensión.</p>
+            <p>En el contexto del emprendimiento, buscamos que los proyectos nacidos en la FEN no solo busquen rentabilidad económica, sino que también generen un impacto positivo en la sociedad y el medio ambiente.</p>
+            <p>Este directorio apoya iniciativas que se alinean con los valores éticos y el desarrollo sostenible.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="miModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal()">&times;</span>
+            <div class="modal-header">
+                <h2 id="m-titulo">Nombre</h2>
+                <div style="color: #663399; font-weight: bold; font-size: 1.1rem;" id="m-dueno">Dueño</div>
+            </div>
+            <div class="modal-info-grid">
+                <div class="info-item"><label> 📧 Correo</label><span id="m-correo">-</span></div>
+                <div class="info-item"><label> 📞 Teléfono</label><span id="m-telefono">-</span></div>
+                <div class="info-item"><label> 🎓 Carrera</label><span id="m-carrera">-</span></div>
+                <div class="info-item"><label> 🆔 RUT</label><span id="m-rut">-</span></div>
+                <div class="info-item"><label> 🚀 Etapa</label><span id="m-etapa">-</span></div>
+                <div class="info-item"><label> 📅 Generación</label><span id="m-gen">-</span></div>
+                <div class="info-item"><label> 📜 Programa</label><span id="m-prog">-</span></div>
+            </div>
+            <div class="info-item"><label> 📝 Descripción Completa</label></div>
+            <div class="modal-desc" id="m-desc">Descripción...</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+    <script type="module">
+        // -----------------------------------------------------------
+        // IMPORTACIONES CORRECTAS (CDN)
+        // -----------------------------------------------------------
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // -----------------------------------------------------------
+        // TUS LLAVES NUEVAS
+        // -----------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyDU0DbrhegekpiUCroxhqGLJ-l1Xk2Rfa4",
+            authDomain: "emprnd-fen.firebaseapp.com",
+            projectId: "emprnd-fen",
+            storageBucket: "emprnd-fen.firebasestorage.app",
+            messagingSenderId: "130510661023",
+            appId: "1:130510661023:web:5358ef6031b6862ff189aa",
+            measurementId: "G-W5C8E6SGEY"
+        };
+
+        // INICIALIZACIÓN
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);        
+
+        // -----------------------------------------------------------
+        // LÓGICA DE NAVEGACIÓN Y CARGA
+        // -----------------------------------------------------------
+
+        window.navegar = function(vista, elemento) {
+            document.querySelectorAll('.seccion-pagina').forEach(sec => sec.classList.remove('seccion-activa'));
+            document.getElementById(`vista-${vista}`).classList.add('seccion-activa');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if(elemento) elemento.classList.add('active');
+        }
+
+        // --- VARIABLES GLOBALES ---
+        let todosLosDatos = [];
+        let resultadosActuales = [];
+        let indiceVisible = 0;
+        const CANTIDAD_POR_PAGINA = 50;
+        let fuse;
+        let modoActual = 'proyectos';
+
+        // Configuración Fuse.js
+        const opcionesFuse = {
+            includeScore: true,
+            threshold: 0.3,
+            keys: ["nombre_emprendimiento", "nombre_completo", "carrera", "rut", "descripcion", "etapa", "situacion"]
+        };
+
+        // --- FUNCIONES ---
+        window.cambiarModo = function(modo) {
+            modoActual = modo;
+            document.getElementById('btn-proyectos').className = (modo === 'proyectos') ? 'tab-btn active' : 'tab-btn';
+            document.getElementById('btn-todos').className = (modo === 'todos') ? 'tab-btn active' : 'tab-btn';
+           
+            const input = document.getElementById('buscador');
+            input.value = "";
+            if(modo === 'proyectos') input.placeholder = " 🔍 Busca startups por nombre, industria o etapa...";
+            else input.placeholder = " 🔍 Busca personas por nombre, carrera o habilidades...";
+           
+            // Reiniciar filtros al cambiar modo
+            document.getElementById('filtro-carrera').value = "";
+            document.getElementById('filtro-etapa').value = "";
+            document.getElementById('filtro-situacion').value = "";
+           
+            aplicarFiltrosGlobales();
+        }
+
+        async function cargarDatos() {
+            try {
+                const q = query(collection(db, "base_datos_fen"), orderBy("fecha_carga", "desc"));
+                const querySnapshot = await getDocs(q);
+               
+                todosLosDatos = [];
+                querySnapshot.forEach((doc) => todosLosDatos.push(doc.data()));
+               
+                // Llenar los selects automáticamente con la data que llegó
+                poblarFiltros(todosLosDatos);
+
+                fuse = new Fuse(todosLosDatos, opcionesFuse);
+                document.getElementById('loader').style.display = 'none';
+                aplicarFiltrosGlobales();
+            } catch (error) {
+                console.error("Error al cargar:", error);
+                try {
+                     const querySnapshot = await getDocs(collection(db, "base_datos_fen"));
+                     todosLosDatos = [];
+                     querySnapshot.forEach((doc) => todosLosDatos.push(doc.data()));
+                     
+                     poblarFiltros(todosLosDatos);
+                     
+                     fuse = new Fuse(todosLosDatos, opcionesFuse);
+                     document.getElementById('loader').style.display = 'none';
+                     aplicarFiltrosGlobales();
+                } catch(e2) {
+                    document.getElementById('loader').innerText = "Error al conectar con la base de datos.";
+                }
+            }
+        }
+
+        // --- NUEVA FUNCIÓN: Llenar Selects Dinámicamente ---
+        function poblarFiltros(datos) {
+            const carreras = new Set();
+            const etapas = new Set();
+            const situaciones = new Set();
+
+            datos.forEach(d => {
+                if(d.carrera) carreras.add(d.carrera.trim());
+                if(d.etapa) etapas.add(d.etapa.trim());
+                if(d.situacion) situaciones.add(d.situacion.trim());
+            });
+
+            agregarOpciones('filtro-carrera', carreras);
+            agregarOpciones('filtro-etapa', etapas);
+            agregarOpciones('filtro-situacion', situaciones);
+        }
+
+        function agregarOpciones(idSelect, setDeDatos) {
+            const select = document.getElementById(idSelect);
+            // Ordenar alfabéticamente
+            const ordenados = Array.from(setDeDatos).sort();
+            ordenados.forEach(valor => {
+                if(valor && valor !== "undefined") {
+                    const opt = document.createElement('option');
+                    opt.value = valor;
+                    opt.innerText = valor;
+                    select.appendChild(opt);
+                }
+            });
+        }
+
+        // --- NUEVA LÓGICA MAESTRA DE FILTRADO ---
+        window.aplicarFiltrosGlobales = function() {
+            const textoBusqueda = document.getElementById('buscador').value;
+            const filtroCarrera = document.getElementById('filtro-carrera').value;
+            const filtroEtapa = document.getElementById('filtro-etapa').value;
+            const filtroSituacion = document.getElementById('filtro-situacion').value;
+
+            // 1. Empezamos con todos o con la búsqueda de texto
+            let baseResultados = todosLosDatos;
+           
+            if (textoBusqueda.trim() !== "") {
+                const resultadosFuse = fuse.search(textoBusqueda);
+                baseResultados = resultadosFuse.map(r => r.item);
+            }
+
+            // 2. Aplicamos los filtros de los Selects y el Modo
+            resultadosActuales = baseResultados.filter(item => {
+                // A. Filtro de Modo (Proyectos vs Todos)
+                const tieneNombreProy = item.nombre_emprendimiento && item.nombre_emprendimiento !== "Sin Nombre" && String(item.nombre_emprendimiento).trim() !== "";
+                const pasaModo = (modoActual === 'proyectos') ? tieneNombreProy : true;
+
+                // B. Filtros de Selects (Si hay algo seleccionado, debe coincidir)
+                const pasaCarrera = filtroCarrera === "" || item.carrera === filtroCarrera;
+                const pasaEtapa = filtroEtapa === "" || item.etapa === filtroEtapa;
+                const pasaSituacion = filtroSituacion === "" || item.situacion === filtroSituacion;
+
+                return pasaModo && pasaCarrera && pasaEtapa && pasaSituacion;
+            });
+
+            // 3. Renderizar
+            document.getElementById('contadorResultados').innerText = `Encontrados: ${resultadosActuales.length}`;
+            document.getElementById('contenedor').innerHTML = "";
+            indiceVisible = 0;
+            renderizarLote();
+        }
+
+        document.getElementById('buscador').addEventListener('keyup', aplicarFiltrosGlobales);
+
+        window.cargarMas = function() { renderizarLote(); }
+
+        function renderizarLote() {
+            const contenedor = document.getElementById('contenedor');
+            const btnContainer = document.getElementById('btn-cargar-mas-container');
+            if (resultadosActuales.length === 0) {
+                contenedor.innerHTML = "<p style='width:100%; text-align:center;'>No hay resultados con estos filtros 😔</p>";
+                btnContainer.style.display = 'none';
+                return;
+            }
+            const siguienteLote = resultadosActuales.slice(indiceVisible, indiceVisible + CANTIDAD_POR_PAGINA);
+            siguienteLote.forEach(item => contenedor.appendChild(crearTarjeta(item)));
+            indiceVisible += CANTIDAD_POR_PAGINA;
+            if (indiceVisible >= resultadosActuales.length) btnContainer.style.display = 'none';
+            else btnContainer.style.display = 'block';
+        }
+
+        function crearTarjeta(item) {
+            const card = document.createElement('div');
+            card.onclick = () => window.abrirModal(item);
+            const marca = item.nombre_emprendimiento || "Sin Proyecto";
+            const dueno = item.nombre_completo || item.nombre + " " + item.apellido || "Anónimo";
+            const carrera = item.carrera || "FEN";
+            const desc = item.descripcion || "Sin descripción.";
+
+            if (modoActual === 'proyectos') {
+                card.className = 'card proyecto';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h3>${marca}</h3>
+                        <div class="subtitulo">👤 ${dueno}</div>
+                        <div class="descripcion">${desc}</div>
+                    </div>
+                    <div class="tags"><span class="badge" style="background:#f3e5f5; color:#4a148c;">🚀 ${item.etapa || "Startup"}</span></div>
+                `;
+            } else {
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h3>${dueno}</h3>
+                        <div class="subtitulo" style="color:var(--fen-purple)">${marca}</div>
+                        <div class="descripcion">Generación: ${item.generacion || "?"}</div>
+                    </div>
+                    <div class="tags"><span class="badge">🎓 ${carrera}</span></div>
+                `;
+            }
+            return card;
+        }
+
+        window.abrirModal = function(item) {
+            document.getElementById('m-titulo').innerText = item.nombre_emprendimiento || "Sin Nombre";
+            document.getElementById('m-dueno').innerText = item.nombre_completo || item.nombre + " " + item.apellido || "Anónimo";
+            document.getElementById('m-correo').innerText = item.correo_personal || "No informado";
+            document.getElementById('m-telefono').innerText = item.telefono || "No informado";
+            document.getElementById('m-carrera').innerText = item.carrera || "FEN";
+            document.getElementById('m-rut').innerText = item.rut || "-";
+            document.getElementById('m-etapa').innerText = item.etapa || "No definida";
+            const gen = item.generacion || 0;
+            document.getElementById('m-gen').innerText = (gen !== 0) ? gen : "-";
+            document.getElementById('m-prog').innerText = item.programa || "-";
+            document.getElementById('m-desc').innerText = item.descripcion || "No hay descripción.";
+            document.getElementById('miModal').style.display = 'flex';
+        }
+
+        window.cerrarModal = function() { document.getElementById('miModal').style.display = 'none'; }
+        document.getElementById('miModal').addEventListener('click', function(e) { if (e.target === this) cerrarModal(); });
+
+        cargarDatos();
+    </script>
+</body>
+</html>

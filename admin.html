@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Emprendedor - FEN</title>
+    <style>
+        :root { --fen-blue: #003366; --fen-purple: #663399; --bg: #f4f7f9; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;}
+        
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+        h2 { color: var(--fen-blue); margin-bottom: 20px; }
+        
+        .auth-input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        
+        button { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--fen-blue), var(--fen-purple)); color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { opacity: 0.9; }
+        .btn-cancelar { background: #ccc; color: #333; margin-top: 10px; }
+        
+        .toggle-text { margin-top: 20px; font-size: 0.9rem; color: #666; cursor: pointer; text-decoration: underline; }
+        
+        /* Estilo para el link de recuperar contraseña */
+        .forgot-pass { margin-top: 10px; font-size: 0.85rem; color: var(--fen-blue); cursor: pointer; display: block; }
+        .forgot-pass:hover { text-decoration: underline; }
+
+        #mensaje { margin-top: 15px; font-size: 0.9rem; min-height: 20px; }
+        .success { color: green; } .error { color: red; }
+        .hidden { display: none; }
+
+        /* --- ESTILOS DEL FORMULARIO --- */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; } 
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.85rem; color: #666; font-weight: bold; margin-bottom: 5px; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; background: #fff; }
+        textarea.form-input { height: 80px; resize: vertical; font-family: sans-serif; }
+        .form-input:disabled { background-color: #e9ecef; color: #6c757d; cursor: not-allowed; font-weight: bold; border-color: #dbe2e6; }
+        .section-title { text-align: left; color: var(--fen-purple); font-size: 1.1rem; border-bottom: 2px solid #eee; padding-bottom: 5px; margin: 20px 0 15px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="auth-container">
+        <h2 id="titulo-form">Acceso Emprendedor</h2>
+        <input type="email" id="email" class="auth-input" placeholder="Correo electrónico">
+        <input type="password" id="password" class="auth-input" placeholder="Contraseña">
+        <input type="password" id="confirm-password" class="auth-input hidden" placeholder="Confirmar Contraseña">
+        
+        <span class="forgot-pass" id="btn-forgot" onclick="recuperarClave()">¿Olvidaste tu contraseña?</span>
+        
+        <button onclick="autenticar()" id="btn-accion">Iniciar Sesión</button>
+        <p class="toggle-text" onclick="alternarModo()" id="toggle-btn">¿No tienes cuenta? Regístrate aquí</p>
+        <div id="mensaje"></div>
+    </div>
+
+    <div class="container hidden" id="dashboard-container">
+        </div>
+
+    <div class="container hidden" id="editor-container">
+        <h2 id="editor-titulo">Editar Perfil</h2>
+        <p style="color:#666; font-size:0.9rem;">Tus datos de contacto.</p>
+        
+        <div class="section-title">👤 Datos Personales</div>
+        <div class="form-group">
+            <label>📧 Correo de Contacto</label>
+            <input type="email" id="static-email" class="form-input" disabled value="...">
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="edit-nombre" class="form-input" placeholder="Ej: Juan">
+            </div>
+            <div class="form-group">
+                <label>Apellido</label>
+                <input type="text" id="edit-apellido" class="form-input" placeholder="Ej: Pérez">
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>RUT</label>
+                <input type="text" id="edit-rut" class="form-input" placeholder="12345678k">
+            </div>
+            <div class="form-group">
+                <label>Sexo</label>
+                <select id="edit-sexo" class="form-input">
+                    <option value="">Selecciona...</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Carrera</label>
+                <select id="edit-carrera" class="form-input"></select>
+            </div>
+            <div class="form-group">
+                <label>Año de Ingreso</label>
+                <input type="number" id="edit-anio" class="form-input" placeholder="Ej: 2020">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Número de Contacto</label>
+            <input type="text" id="edit-telefono" class="form-input" placeholder="+569...">
+        </div>
+
+        <div class="section-title">🚀 Datos del Emprendimiento</div>
+        <div class="form-group">
+            <label>Nombre del Emprendimiento</label>
+            <input type="text" id="edit-marca" class="form-input" placeholder="Nombre de tu marca">
+        </div>
+        <div class="form-group">
+            <label>Descripción</label>
+            <textarea id="edit-desc" class="form-input" placeholder="Describe tu producto o servicio..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Etapa Actual</label>
+            <select id="edit-etapa" class="form-input">
+                <option value="Idea">Solo es una Idea</option>
+                <option value="Prototipo">Prototipo / MVP</option>
+                <option value="Ventas Iniciales">Ventas Iniciales</option>
+                <option value="Escalamiento">Escalamiento / Crecimiento</option>
+            </select>
+        </div>
+
+        <button onclick="guardarCambios()">💾 Guardar Perfil</button>
+        <button onclick="cancelarEdicion()" class="btn-cancelar">Cancelar</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        // AQUI AGREGAMOS sendPasswordResetEmail
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // -----------------------------------------------------------
+        // 🔴🔴 PEGA TUS LLAVES AQUÍ 🔴🔴
+        // -----------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyDU0DbrhegekpiUCroxhqGLJ-l1Xk2Rfa4",
+            authDomain: "emprnd-fen.firebaseapp.com",
+            projectId: "emprnd-fen",
+            storageBucket: "emprnd-fen.firebasestorage.app",
+            messagingSenderId: "130510661023",
+            appId: "1:130510661023:web:5358ef6031b6862ff189aa",
+            measurementId: "G-W5C8E6SGEY"
+        };
+
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Variables Globales
+        let esRegistro = false; 
+        let usuarioActualEmail = ""; 
+        let idDocumentoFirebase = null; 
+
+        // LISTA DE CARRERAS
+        const carrerasUChile = [
+            "Ingeniería Comercial", "Ingeniería en Información y Control de Gestión", "Contador Auditor",
+            "Ingeniería Civil Industrial", "Ingeniería Civil Informática", "Ingeniería Civil Eléctrica",
+            "Derecho", "Medicina", "Enfermería", "Kinesiología", "Psicología", "Sociología", 
+            "Arquitectura", "Diseño", "Periodismo", "Veterinaria", "Agronomía", "Bachillerato", "Otra / Postgrado"
+        ];
+
+        function cargarOpcionesCarrera() {
+            const select = document.getElementById('edit-carrera');
+            select.innerHTML = '<option value="">Selecciona tu carrera...</option>';
+            carrerasUChile.sort().forEach(carrera => {
+                const option = document.createElement('option');
+                option.value = carrera;
+                option.innerText = carrera;
+                select.appendChild(option);
+            });
+        }
+        cargarOpcionesCarrera();
+
+        // --- SISTEMA DE LOGIN Y RECUPERACIÓN ---
+        window.alternarModo = function() {
+            esRegistro = !esRegistro;
+            document.getElementById('titulo-form').innerText = esRegistro ? "Crear Cuenta" : "Acceso Emprendedor";
+            document.getElementById('btn-accion').innerText = esRegistro ? "Registrarse" : "Iniciar Sesión";
+            document.getElementById('toggle-btn').innerText = esRegistro ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate aquí";
+            
+            const confirm = document.getElementById('confirm-password');
+            const forgot = document.getElementById('btn-forgot');
+            
+            if(esRegistro) {
+                confirm.classList.remove('hidden'); 
+                forgot.style.display = 'none'; // Ocultar "Olvidé clave" en registro
+            } else {
+                confirm.classList.add('hidden');
+                forgot.style.display = 'block'; // Mostrar "Olvidé clave" en login
+            }
+        }
+
+        // --- FUNCIÓN NUEVA PARA RECUPERAR CLAVE ---
+        window.recuperarClave = async function() {
+            const email = document.getElementById('email').value;
+            const msg = document.getElementById('mensaje');
+
+            if (!email) {
+                alert("⚠️ Por favor, escribe tu correo en la casilla de arriba primero.");
+                document.getElementById('email').focus();
+                return;
+            }
+
+            if(confirm(`¿Enviar correo de recuperación a: ${email}?`)) {
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    msg.innerText = "✅ Correo enviado. IMPORTANTE: Revisa tu carpeta de SPAM o 'Correo No Deseado'.";
+                    msg.className = "success";
+                    alert("✅ ¡Correo enviado!\n\nSi no lo ves en tu bandeja de entrada, busca en la carpeta de SPAM o 'Correo No Deseado', suele llegar ahí.");
+                } catch (error) {
+                    console.error(error);
+                    let txt = error.code;
+                    if(txt === 'auth/user-not-found') txt = "Ese correo no está registrado.";
+                    if(txt === 'auth/invalid-email') txt = "El correo no es válido.";
+                    msg.innerText = "Error: " + txt;
+                    msg.className = "error";
+                }
+            }
+        }
+
+        window.autenticar = async function() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+            const msg = document.getElementById('mensaje');
+
+            if(!email || !pass) { msg.innerText = "Faltan datos"; return; }
+            if(esRegistro && pass !== confirmPass) { msg.innerText = "Las contraseñas no coinciden"; return; }
+
+            msg.innerText = "Procesando...";
+
+            try {
+                let userCredential;
+                if (esRegistro) userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                else userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                
+                usuarioActualEmail = userCredential.user.email;
+                buscarEmprendimiento(usuarioActualEmail);
+
+            } catch (error) {
+                console.error(error);
+                let txt = error.code;
+                if(txt === 'auth/wrong-password') txt = "Contraseña incorrecta";
+                if(txt === 'auth/user-not-found') txt = "Usuario no encontrado";
+                if(txt === 'auth/email-already-in-use') txt = "El correo ya está registrado";
+                msg.innerText = "Error: " + txt;
+                msg.className = "error";
+            }
+        }
+
+        // --- DASHBOARD (Igual que antes) ---
+        async function buscarEmprendimiento(email) {
+            document.getElementById('auth-container').classList.add('hidden');
+            const dashboard = document.getElementById('dashboard-container');
+            dashboard.classList.remove('hidden');
+            
+            dashboard.innerHTML = "<p>🔍 Buscando tu historial...</p>";
+            const q = query(collection(db, "base_datos_fen"), where("correo_personal", "==", email));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const docSnap = querySnapshot.docs[0];
+                const data = docSnap.data();
+                idDocumentoFirebase = docSnap.id; 
+                dashboard.innerHTML = `
+                    <h2>👋 Hola, ${data.nombre || "Emprendedor"}</h2>
+                    <div style="background:#e3f2fd; padding:20px; border-radius:10px; margin-bottom:20px;">
+                        <h3>${data.nombre_emprendimiento}</h3>
+                        <p><strong>Carrera:</strong> ${data.carrera || "-"}</p>
+                    </div>
+                    <button onclick="abrirEditor('editar')">✏️ Editar Información</button>
+                    <button onclick="cerrarSesion()" class="btn-cancelar">Cerrar Sesión</button>
+                `;
+                llenarFormulario(data);
+            } else {
+                idDocumentoFirebase = null; 
+                dashboard.innerHTML = `
+                    <h2>🚀 ¡Bienvenido!</h2>
+                    <p>No encontramos un perfil para <strong>${email}</strong>.</p>
+                    <button onclick="abrirEditor('crear')">📝 Crear Nuevo Perfil</button>
+                    <button onclick="cerrarSesion()" class="btn-cancelar">Cerrar Sesión</button>
+                `;
+                limpiarFormulario();
+            }
+        }
+
+        // --- FUNCIONES EDITOR ---
+        function limpiarFormulario() {
+            document.getElementById('static-email').value = usuarioActualEmail;
+            document.getElementById('edit-nombre').value = "";
+            document.getElementById('edit-apellido').value = "";
+            document.getElementById('edit-rut').value = "";
+            document.getElementById('edit-sexo').value = "";
+            document.getElementById('edit-carrera').value = "";
+            document.getElementById('edit-anio').value = "";
+            document.getElementById('edit-telefono').value = "";
+            document.getElementById('edit-marca').value = "";
+            document.getElementById('edit-desc').value = "";
+        }
+
+        function llenarFormulario(data) {
+            document.getElementById('static-email').value = usuarioActualEmail;
+            let nombre = data.nombre || "";
+            let apellido = data.apellido || "";
+            if (!nombre && data.nombre_completo) {
+                const partes = data.nombre_completo.split(" ");
+                nombre = partes[0];
+                apellido = partes.slice(1).join(" ");
+            }
+            document.getElementById('edit-nombre').value = nombre;
+            document.getElementById('edit-apellido').value = apellido;
+            document.getElementById('edit-rut').value = data.rut || "";
+            document.getElementById('edit-sexo').value = data.sexo || "";
+            document.getElementById('edit-carrera').value = data.carrera || "";
+            document.getElementById('edit-anio').value = data.generacion || ""; 
+            document.getElementById('edit-telefono').value = data.telefono || "";
+            document.getElementById('edit-marca').value = data.nombre_emprendimiento || "";
+            document.getElementById('edit-desc').value = data.descripcion || "";
+            document.getElementById('edit-etapa').value = data.etapa || "Idea";
+        }
+
+        window.abrirEditor = function(modo) {
+            document.getElementById('dashboard-container').classList.add('hidden');
+            document.getElementById('editor-container').classList.remove('hidden');
+            document.getElementById('editor-titulo').innerText = modo === 'crear' ? "Crear Nuevo Perfil" : "Editar Perfil";
+            if(modo === 'crear') limpiarFormulario();
+        }
+
+        window.cancelarEdicion = function() {
+            document.getElementById('editor-container').classList.add('hidden');
+            document.getElementById('dashboard-container').classList.remove('hidden');
+        }
+
+        window.guardarCambios = async function() {
+            const nombre = document.getElementById('edit-nombre').value.trim();
+            const apellido = document.getElementById('edit-apellido').value.trim();
+            const rut = document.getElementById('edit-rut').value.trim();
+            const sexo = document.getElementById('edit-sexo').value;
+            const carrera = document.getElementById('edit-carrera').value;
+            const anio = document.getElementById('edit-anio').value;
+            const telefono = document.getElementById('edit-telefono').value.trim();
+            const marca = document.getElementById('edit-marca').value.trim();
+            const desc = document.getElementById('edit-desc').value.trim();
+            const etapa = document.getElementById('edit-etapa').value;
+
+            if(!nombre || !apellido || !rut || !marca || !carrera) { alert("Completa los campos obligatorios."); return; }
+
+            const datosGuardar = {
+                nombre: nombre,
+                apellido: apellido,
+                nombre_completo: `${nombre} ${apellido}`,
+                rut: rut,
+                sexo: sexo,
+                carrera: carrera,
+                generacion: Number(anio) || 0,
+                telefono: telefono,
+                nombre_emprendimiento: marca,
+                descripcion: desc,
+                etapa: etapa,
+                correo_personal: usuarioActualEmail,
+                fecha_actualizacion: new Date()
+            };
+
+            try {
+                if (idDocumentoFirebase) {
+                    const docRef = doc(db, "base_datos_fen", idDocumentoFirebase);
+                    await updateDoc(docRef, datosGuardar);
+                    alert("✅ ¡Perfil actualizado!");
+                } else {
+                    datosGuardar.fecha_registro = new Date();
+                    await addDoc(collection(db, "base_datos_fen"), datosGuardar);
+                    alert("🚀 ¡Perfil creado!");
+                }
+                buscarEmprendimiento(usuarioActualEmail);
+                document.getElementById('editor-container').classList.add('hidden');
+            } catch (e) {
+                console.error(e);
+                alert("Error al guardar: " + e.message);
+            }
+        }
+
+        window.cerrarSesion = function() {
+            signOut(auth).then(() => location.reload());
+        }
+    </script>
+</body>
+</html>

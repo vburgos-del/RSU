@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODO DIOS - Super Admin</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a1a; color: white; margin: 0; padding: 20px; }
+        
+        /* Login Admin */
+        .login-box { max-width: 300px; margin: 100px auto; background: #333; padding: 30px; border-radius: 10px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+        button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-green { background: #00ff88; color: #000; }
+        .btn-red { background: #ff4444; color: white; }
+        
+        /* Tabla de Datos */
+        .admin-panel { display: none; } /* Oculto al inicio */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #2a2a2a; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #444; }
+        th { background: #333; color: #00ff88; }
+        tr:hover { background: #333; }
+        
+        .actions { display: flex; gap: 10px; }
+        .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; background: #555; }
+        
+        /* Modal de Edición */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+        .modal-content { background: #222; padding: 30px; width: 400px; border-radius: 10px; border: 1px solid #444; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box" id="login-view">
+        <h2 style="color:#00ff88;">⚡ MODO DIOS</h2>
+        <input type="email" id="adm-email" placeholder="Correo Admin">
+        <input type="password" id="adm-pass" placeholder="Contraseña">
+        <button class="btn-green" onclick="loginAdmin()">Entrar</button>
+        <p id="msg-login" style="color:red; font-size:0.9rem;"></p>
+    </div>
+
+    <div class="admin-panel" id="panel-view">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>🛠️ Panel de Control</h1>
+            <button class="btn-red" onclick="location.reload()">Salir</button>
+        </div>
+        <p>Mostrando los últimos 50 registros.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Emprendimiento</th>
+                    <th>Dueño</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-cuerpo">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="modal-overlay" id="modal-edit">
+        <div class="modal-content">
+            <h2 style="margin-top:0;">✏️ Forzar Edición</h2>
+            
+            <div class="form-group">
+                <label>Nombre Emprendimiento</label>
+                <input type="text" id="edit-marca">
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <input type="text" id="edit-desc">
+            </div>
+            <div class="form-group">
+                <label>Etapa</label>
+                <input type="text" id="edit-etapa">
+            </div>
+
+            <button class="btn-green" onclick="guardarForzado()">💾 Guardar Cambios</button>
+            <button class="btn-red" onclick="document.getElementById('modal-edit').style.display='none'">Cancelar</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 🔴🔴 PEGA TUS LLAVES AQUÍ 🔴🔴
+       const firebaseConfig = {
+            apiKey: "AIzaSyDU0DbrhegekpiUCroxhqGLJ-l1Xk2Rfa4",
+            authDomain: "emprnd-fen.firebaseapp.com",
+            projectId: "emprnd-fen",
+            storageBucket: "emprnd-fen.firebasestorage.app",
+            messagingSenderId: "130510661023",
+            appId: "1:130510661023:web:5358ef6031b6862ff189aa",
+            measurementId: "G-W5C8E6SGEY"
+        };
+
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let idEditando = null;
+
+        // 1. LOGIN ADMIN
+        window.loginAdmin = async () => {
+            const email = document.getElementById('adm-email').value;
+            const pass = document.getElementById('adm-pass').value;
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('panel-view').style.display = 'block';
+                cargarDatos();
+            } catch (e) {
+                document.getElementById('msg-login').innerText = "Acceso Denegado: " + e.code;
+            }
+        }
+
+        // 2. CARGAR TABLA
+        async function cargarDatos() {
+            const tbody = document.getElementById('tabla-cuerpo');
+            tbody.innerHTML = "<tr><td colspan='5'>Cargando datos...</td></tr>";
+
+            // Traemos los últimos 50 registros por fecha
+            const q = query(collection(db, "base_datos_fen"), orderBy("fecha_registro", "desc"), limit(50));
+            const snapshot = await getDocs(q);
+            
+            tbody.innerHTML = ""; // Limpiar
+
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                
+                // Formatear fecha bonita
+                let fecha = "N/A";
+                if(data.fecha_registro && data.fecha_registro.toDate) {
+                    fecha = data.fecha_registro.toDate().toLocaleDateString();
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="badge">${fecha}</span></td>
+                    <td style="font-weight:bold; color:#fff;">${data.nombre_emprendimiento || "Sin Nombre"}</td>
+                    <td>${data.nombre_completo || "Anon"}</td>
+                    <td style="color:#888; font-size:0.8rem;">${data.correo_personal}</td>
+                    <td class="actions">
+                        <button class="btn-green" style="padding:5px 10px;" onclick="abrirEdit('${id}', '${data.nombre_emprendimiento}', '${data.descripcion}', '${data.etapa}')">✏️</button>
+                        <button class="btn-red" style="padding:5px 10px;" onclick="borrar('${id}', '${data.nombre_emprendimiento}')">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 3. BORRAR (ELIMINAR DE VERDAD)
+        window.borrar = async (id, nombre) => {
+            if(confirm(`⚠️ ¿ESTÁS SEGURO?\n\nVas a eliminar permanentemente a:\n${nombre}\n\nEsta acción no se puede deshacer.`)) {
+                try {
+                    await deleteDoc(doc(db, "base_datos_fen", id));
+                    alert("🗑️ Eliminado correctamente");
+                    cargarDatos(); // Recargar tabla
+                } catch (e) {
+                    alert("Error: No tienes permisos o algo falló.\n" + e.message);
+                }
+            }
+        }
+
+        // 4. ABRIR MODAL EDICIÓN
+        window.abrirEdit = (id, marca, desc, etapa) => {
+            idEditando = id;
+            document.getElementById('edit-marca').value = marca;
+            document.getElementById('edit-desc').value = desc || "";
+            document.getElementById('edit-etapa').value = etapa || "";
+            document.getElementById('modal-edit').style.display = 'flex';
+        }
+
+        // 5. GUARDAR CAMBIOS (Super Admin)
+        window.guardarForzado = async () => {
+            if(!idEditando) return;
+            
+            const nuevosDatos = {
+                nombre_emprendimiento: document.getElementById('edit-marca').value,
+                descripcion: document.getElementById('edit-desc').value,
+                etapa: document.getElementById('edit-etapa').value
+            };
+
+            try {
+                await updateDoc(doc(db, "base_datos_fen", idEditando), nuevosDatos);
+                alert("✅ Editado por Admin");
+                document.getElementById('modal-edit').style.display = 'none';
+                cargarDatos();
+            } catch (e) {
+                alert("Error al editar: " + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

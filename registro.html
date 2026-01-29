@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Datos FEN | Registro de Emprendedores</title>
+    <style>
+        /* --- VARIABLES DE COLOR FEN --- */
+        :root {
+            --fen-blue: #003366; /* Azul Marino Institucional */
+            --fen-purple: #663399; /* Morado Acento */
+            --fen-gradient: linear-gradient(135deg, var(--fen-blue), var(--fen-purple));
+            --bg-color: #f4f7f9; /* Fondo gris azulado muy suave */
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-color);
+            /* Fondo sutil profesional */
+            background-image: linear-gradient(to top, #dfe9f3 0%, white 100%);
+            margin: 0; 
+            padding: 40px 20px;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container { 
+            background: white; 
+            padding: 50px; 
+            border-radius: 8px; 
+            /* Sombra suave y profesional */
+            box-shadow: 0 15px 35px rgba(0,51,102,0.1); 
+            width: 100%; 
+            max-width: 700px; /* Un poco más ancho para que se vea bien */
+            border-top: 5px solid var(--fen-blue); /* Detalle de marca superior */
+        }
+
+        h1 { 
+            color: var(--fen-blue);
+            text-align: center; 
+            font-size: 32px; 
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        /* --- SECCIONES DEL FORMULARIO --- */
+        .form-section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .form-section h2 {
+            color: var(--fen-blue);
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Pequeña línea decorativa al lado del título de sección */
+        .form-section h2::after {
+            content: '';
+            flex: 1;
+            margin-left: 15px;
+            height: 2px;
+            background: #e1e8ed;
+        }
+
+        /* --- CAMPOS DE ENTRADA --- */
+        label { 
+            font-weight: 600; 
+            display: block; 
+            margin-top: 18px; 
+            color: var(--fen-blue); 
+            font-size: 14px; 
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid #cfd8dc; 
+            border-radius: 4px; /* Bordes menos redondeados, más serios */
+            box-sizing: border-box; 
+            font-size: 15px;
+            color: #333;
+            transition: all 0.3s ease;
+            background-color: #fbfcfd;
+        }
+
+        /* Efecto al hacer clic en un campo */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--fen-blue);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        textarea { resize: vertical; height: 100px; }
+
+        /* Clase para poner dos campos en una misma fila */
+        .row-2 { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+
+        /* --- BOTÓN PRINCIPAL --- */
+        button { 
+            background: var(--fen-gradient); /* Degradado Azul a Morado FEN */
+            color: white; 
+            padding: 18px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 18px; 
+            font-weight: 700; 
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px rgba(102, 51, 153, 0.3);
+        }
+        
+        /* Ajuste para móviles */
+        @media (max-width: 600px) {
+            .row-2 { grid-template-columns: 1fr; gap: 0; }
+            .container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>FACULTAD DE ECONOMÍA Y NEGOCIOS</h1>
+        <p class="subtitle">Plataforma de Registro de Emprendedores</p>
+        
+        <div class="form-section">
+            <h2>Información Personal</h2>
+            
+            <label for="correoPersonal">Correo Electrónico Personal *</label>
+            <input type="email" id="correoPersonal" placeholder="nombre@ejemplo.com">
+
+            <div class="row-2">
+                <div>
+                    <label for="nombre">Nombre(s) *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Vicente Ignacio">
+                </div>
+                <div>
+                    <label for="apellido">Apellido(s) *</label>
+                    <input type="text" id="apellido" placeholder="Ej: Burgos">
+                </div>
+            </div>
+            <div class="row-2">
+                 <div>
+                    <label for="rut">RUT (sin puntos ni guion) *</label>
+                    <input type="text" id="rut" placeholder="Ej: 12345678K">
+                </div>
+                <div>
+                    <label for="sexo">Sexo *</label>
+                    <select id="sexo">
+                        <option value="">- Seleccionar -</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Otro">Otro</option>
+                        <option value="Prefiero no decir">Prefiero no decir</option>
+                    </select>
+                </div>
+            </div>
+            
+            <label for="telefono">Teléfono de Contacto</label>
+            <input type="tel" id="telefono" placeholder="+56 9 1234 5678">
+        </div>
+
+
+        <div class="form-section">
+            <h2>Perfil Académico FEN</h2>
+
+             <label for="usuario">Usuario (ID Interno / Pasaporte UChile)</label>
+            <input type="text" id="usuario" placeholder="Ej: vburgos">
+
+            <div class="row-2">
+                <div>
+                    <label for="carrera">Carrera *</label>
+                    <select id="carrera">
+                        <option value="">- Seleccionar -</option>
+                        <option value="Ingeniería Comercial">Ingeniería Comercial</option>
+                        <option value="Ingeniería en Información y Control de Gestión">IICG / Auditoría</option>
+                        <option value="Contador Auditor">Contador Auditor</option>
+                        <option value="Magíster/Postgrado">Magíster / Postgrado</option>
+                        <option value="Otra">Otra</option>
+                    </select>
+                </div>
+                <div>
+                     <label for="generacion">Generación (Año Ingreso) *</label>
+                     <input type="number" id="generacion" placeholder="Ej: 2023" min="1950" max="2030">
+                </div>
+            </div>
+
+             <label for="situacionAcademica">Situación Académica Actual *</label>
+             <select id="situacionAcademica">
+                <option value="Alumno Regular">Alumno Regular (Pregrado)</option>
+                <option value="Egresado">Egresado (No titulado)</option>
+                <option value="Titulado">Titulado Profesional</option>
+                <option value="Alumno Postgrado">Alumno Postgrado</option>
+                <option value="Suspendido/Retirado">Suspendido / Retirado</option>
+            </select>
+        </div>
+
+
+        <div class="form-section" style="border-bottom: none;">
+            <h2>Datos del Emprendimiento</h2>
+            
+            <label for="nombreEmprendimiento">Nombre del Emprendimiento / Marca *</label>
+            <input type="text" id="nombreEmprendimiento" placeholder="Nombre comercial de tu proyecto">
+
+            <label for="descripcion">Descripción Breve *</label>
+            <textarea id="descripcion" placeholder="¿Qué hace tu emprendimiento? ¿Cuál es su propuesta de valor? (Máx 300 caracteres)"></textarea>
+
+            <div class="row-2">
+                <div>
+                    <label for="etapa">Etapa de Desarrollo *</label>
+                    <select id="etapa">
+                        <option value="Idea">Idea / Concepto</option>
+                        <option value="Prototipo">Prototipo / MVP</option>
+                        <option value="Ventas Iniciales">Ventas Iniciales</option>
+                        <option value="Crecimiento/Escalamiento">Crecimiento / Escalamiento</option>
+                        <option value="Consolidado">Consolidado</option>
+                    </select>
+                </div>
+                <div>
+                     <label for="programa">Programa de Apoyo (Si aplica)</label>
+                     <input type="text" id="programa" placeholder="Ej: FEN Alumni, Incuba...">
+                </div>
+            </div>
+             <label for="correoEmprendimiento">Correo del Emprendimiento (Público)</label>
+            <input type="email" id="correoEmprendimiento" placeholder="contacto@tuemprendimiento.cl">
+
+        </div>
+
+        <button id="btnGuardar">Registrar en Base de Datos FEN</button>
+        <p style="text-align: center; color: #999; font-size: 12px; margin-top: 15px;">* Campos obligatorios para el registro.</p>
+    </div>
+
+    <script type="module">
+        // Importar Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+  apiKey: "AIzaSyDU0DbrhegekpiUCroxhqGLJ-l1Xk2Rfa4",
+  authDomain: "emprnd-fen.firebaseapp.com",
+  projectId: "emprnd-fen",
+  storageBucket: "emprnd-fen.firebasestorage.app",
+  messagingSenderId: "130510661023",
+  appId: "1:130510661023:web:5358ef6031b6862ff189aa",
+  measurementId: "G-W5C8E6SGEY"
+};
+
+      
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Lógica del botón Guardar
+        document.getElementById('btnGuardar').addEventListener('click', async () => {
+            
+            // 1. Recolectar todos los datos de las casillas
+            const nombreInput = document.getElementById('nombre').value.trim();
+            const apellidoInput = document.getElementById('apellido').value.trim();
+            
+            // Aquí creamos el "Nombre Completo" automáticamente
+            const nombreCompletoGenerado = `${nombreInput} ${apellidoInput}`.trim();
+
+            const datosFormulario = {
+                // Datos Personales
+                correo_personal: document.getElementById('correoPersonal').value,
+                usuario_id: document.getElementById('usuario').value,
+                nombre: nombreInput,
+                apellido: apellidoInput,
+                nombre_completo: nombreCompletoGenerado, // <-- Dato automático
+                rut: document.getElementById('rut').value,
+                sexo: document.getElementById('sexo').value,
+                telefono: document.getElementById('telefono').value,
+                
+                // Datos Académicos
+                carrera: document.getElementById('carrera').value,
+                generacion: Number(document.getElementById('generacion').value),
+                situacion_academica: document.getElementById('situacionAcademica').value,
+
+                // Datos del Emprendimiento
+                nombre_emprendimiento: document.getElementById('nombreEmprendimiento').value,
+                descripcion: document.getElementById('descripcion').value,
+                etapa: document.getElementById('etapa').value,
+                programa: document.getElementById('programa').value,
+                correo_emprendimiento: document.getElementById('correoEmprendimiento').value,
+                
+                // Metadatos (Fecha y hora del registro)
+                fecha_registro: new Date()
+            };
+
+            // 2. Validación básica de campos obligatorios (*)
+            if (!datosFormulario.correo_personal || !datosFormulario.nombre || !datosFormulario.apellido || !datosFormulario.rut || !datosFormulario.nombre_emprendimiento) {
+                alert("⚠️ Por favor, completa los campos obligatorios marcados con asterisco (*).");
+                return; // Detener si faltan datos clave
+            }
+            
+            // Cambiar el texto del botón mientras carga
+            const btn = document.getElementById('btnGuardar');
+            btn.innerText = "Procesando registro...";
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
+
+            try {
+                // 3. Guardar en una colección profesional llamada "base_datos_fen"
+                const docRef = await addDoc(collection(db, "base_datos_fen"), datosFormulario);
+
+                console.log("Documento escrito con ID: ", docRef.id);
+                alert("✅ ¡Registro FEN exitoso! Los datos se han guardado correctamente en la base de datos.");
+                
+                // Recargar la página para limpiar el formulario
+                window.location.reload();
+
+            } catch (error) {
+                console.error("Error al agregar el documento: ", error);
+                alert("❌ Error crítico al guardar en la base de datos:\n" + error.message);
+                // Restaurar botón si falla
+                btn.innerText = "Registrar en Base de Datos FEN";
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
+        });
+    </script>
+</body>
+</html>
+
+
