@@ -363,34 +363,39 @@
 
         // --- NUEVA LÓGICA MAESTRA DE FILTRADO ---
         window.aplicarFiltrosGlobales = function() {
-            const textoBusqueda = document.getElementById('buscador').value;
-            const filtroCarrera = document.getElementById('filtro-carrera').value;
-            const filtroEtapa = document.getElementById('filtro-etapa').value;
-            const filtroSituacion = document.getElementById('filtro-situacion').value;
+            // 1. Leemos qué seleccionó el usuario en los 5 filtros
+            const texto = document.getElementById('buscador').value;
+            const selFac = document.getElementById('filtro-facultad').value;
+            const selCar = document.getElementById('filtro-carrera').value;
+            const selInd = document.getElementById('filtro-industria').value;
+            const selEta = document.getElementById('filtro-etapa').value;
+            const selSit = document.getElementById('filtro-situacion').value;
 
-            // 1. Empezamos con todos o con la búsqueda de texto
             let baseResultados = todosLosDatos;
-           
-            if (textoBusqueda.trim() !== "") {
-                const resultadosFuse = fuse.search(textoBusqueda);
+
+            // Búsqueda por texto (Fuse.js)
+            if (texto.trim() !== "") {
+                const resultadosFuse = fuse.search(texto);
                 baseResultados = resultadosFuse.map(r => r.item);
             }
 
-            // 2. Aplicamos los filtros de los Selects y el Modo
+            // FILTRADO EN CASCADA (Tienen que cumplirse TODAS las condiciones)
             resultadosActuales = baseResultados.filter(item => {
-                // A. Filtro de Modo (Proyectos vs Todos)
-                const tieneNombreProy = item.nombre_emprendimiento && item.nombre_emprendimiento !== "Sin Nombre" && String(item.nombre_emprendimiento).trim() !== "";
-                const pasaModo = (modoActual === 'proyectos') ? tieneNombreProy : true;
+                // Filtro base: ¿Es proyecto o persona?
+                const esProyecto = item.nombre_emprendimiento && item.nombre_emprendimiento !== "Sin Nombre";
+                const pasaModo = (modoActual === 'proyectos') ? esProyecto : true;
 
-                // B. Filtros de Selects (Si hay algo seleccionado, debe coincidir)
-                const pasaCarrera = filtroCarrera === "" || item.carrera === filtroCarrera;
-                const pasaEtapa = filtroEtapa === "" || item.etapa === filtroEtapa;
-                const pasaSituacion = filtroSituacion === "" || item.situacion === filtroSituacion;
+                // Los 5 Filtros: Si está vacío (""), pasa. Si no, debe coincidir.
+                const pasaFac = selFac === "" || item.facultad === selFac;
+                const pasaCar = selCar === "" || item.carrera === selCar;
+                const pasaInd = selInd === "" || item.industria === selInd;
+                const pasaEta = selEta === "" || item.etapa === selEta;
+                const pasaSit = selSit === "" || item.situacion === selSit;
 
-                return pasaModo && pasaCarrera && pasaEtapa && pasaSituacion;
+                return pasaModo && pasaFac && pasaCar && pasaInd && pasaEta && pasaSit;
             });
 
-            // 3. Renderizar
+            // Actualizar vista
             document.getElementById('contadorResultados').innerText = `Encontrados: ${resultadosActuales.length}`;
             document.getElementById('contenedor').innerHTML = "";
             indiceVisible = 0;
