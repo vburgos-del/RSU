@@ -48,30 +48,37 @@ const subirDatos = async () => {
             // Buscamos 'generacion' O 'generación' (con tilde) O 'Generación'
             const genReal = item.generacion || item.generación || item.Generación || item.Generacion;
             
+            // --- BLOQUE ACTUALIZADO PARA LEER TUS NUEVAS COLUMNAS ---
             const nuevoEmprendedor = {
+                // IDs básicos
                 usuario_id: item.usuario || "sin-id",
                 rut: item.rut || "",
+                fecha_registro: new Date(),
+                
+                // 1. Datos Personales
                 nombre_completo: item.nombre_completo || `${nombreFinal} ${apellidoFinal}`,
                 nombre: nombreFinal || "",
                 apellido: apellidoFinal || "",
-                sexo: item.sexo || "No especificado",
-                
                 correo_personal: item.correo || "",
                 telefono: item.telefono || "",
+                sexo: item.sexo || "No especificado",
 
-                carrera: item.carrera || "",
-                
-                // Usamos la variable genReal que detectamos arriba
+                // 2. Datos Académicos (PARA FILTROS)
+                facultad: item.facultad || item.Facultad || "FEN", // Columna Facultad
+                carrera: item.carrera || item.Carrera || "",       // Columna Carrera
+                situacion: item.situacion || item.Situacion || "Estudiante", // Columna: Estudiante o Egresado
                 generacion: Number(genReal) || 0,
-                
-                situacion_academica: item.situacion || "", 
 
-                nombre_emprendimiento: item.marca || "Sin Nombre",
+                // 3. Datos del Emprendimiento (PARA FILTROS)
+                nombre_emprendimiento: item.marca || item.proyecto || "Sin Nombre",
                 descripcion: item.descripcion || "",
-                etapa: item.etapa || "",
+                
+                // ¡OJO AQUÍ! Asegúrate que tu Excel tenga columna "Industria"
+                industria: item.industria || item.Industria || "General", 
+                
+                etapa: item.etapa || item.Etapa || "Idea", // Idea, MVP, Ventas, Escalamiento
                 programa: item.programa || "",
                 
-                fecha_registro: new Date(),
                 origen: "carga_masiva_excel"
             };
 
