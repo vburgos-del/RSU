@@ -326,17 +326,23 @@
 
         // --- NUEVA FUNCIÓN: Llenar Selects Dinámicamente ---
         function poblarFiltros(datos) {
+            const facultades = new Set();
             const carreras = new Set();
+            const industrias = new Set(); // Nuevo
             const etapas = new Set();
             const situaciones = new Set();
 
             datos.forEach(d => {
+                if(d.facultad) facultades.add(d.facultad.trim());
                 if(d.carrera) carreras.add(d.carrera.trim());
+                if(d.industria) industrias.add(d.industria.trim()); // Nuevo
                 if(d.etapa) etapas.add(d.etapa.trim());
                 if(d.situacion) situaciones.add(d.situacion.trim());
             });
 
+            agregarOpciones('filtro-facultad', facultades);
             agregarOpciones('filtro-carrera', carreras);
+            agregarOpciones('filtro-industria', industrias);
             agregarOpciones('filtro-etapa', etapas);
             agregarOpciones('filtro-situacion', situaciones);
         }
