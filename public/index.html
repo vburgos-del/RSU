@@ -149,14 +149,24 @@
         </div>
 
         <div class="filters-container">
+            <select id="filtro-facultad" class="filter-select" onchange="aplicarFiltrosGlobales()">
+                <option value="">🏛️ Facultad</option>
+            </select>
+
             <select id="filtro-carrera" class="filter-select" onchange="aplicarFiltrosGlobales()">
-                <option value="">🎓 Todas las Carreras</option>
+                <option value="">🎓 Carrera</option>
             </select>
+
+            <select id="filtro-industria" class="filter-select" onchange="aplicarFiltrosGlobales()">
+                <option value="">🏭 Industria</option>
+            </select>
+
             <select id="filtro-etapa" class="filter-select" onchange="aplicarFiltrosGlobales()">
-                <option value="">🚀 Tipo / Etapa</option>
+                <option value="">🚀 Etapa</option>
             </select>
+
             <select id="filtro-situacion" class="filter-select" onchange="aplicarFiltrosGlobales()">
-                <option value="">🎓 Estudiante vs Egresado</option>
+                <option value="">👤 Estado (Alumni/Estudiante)</option>
             </select>
         </div>
        
